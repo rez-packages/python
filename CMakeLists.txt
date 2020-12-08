@@ -39,4 +39,4 @@ ExternalProject_Add(
 )
 
 
-install(CODE "message(STATUS \"${PROJECT_NAME}-${PROJECT_VERSION} installed.\")")
+install(CODE "message(STATUS \"Python-${PROJECT_VERSION} installed.\")")
