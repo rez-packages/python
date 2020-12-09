@@ -9,7 +9,12 @@ file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX})
 set(URL https://www.python.org/ftp/python/${PROJECT_VERSION}/Python-${PROJECT_VERSION}.tgz)
 set(ARCHIVE_REL libs/python-${PROJECT_VERSION}.tar.gz)
 
-set(CONFIGURE_COMMAND ./configure --prefix=${CMAKE_INSTALL_PREFIX} --enable-shared --enable-optimizations --enable-unicode=ucs4 LDFLAGS=-Wl,-rpath,'$$ORIGIN/../lib/')
+set(CONFIGURE_COMMAND ./configure --prefix=${CMAKE_INSTALL_PREFIX} --enable-shared --enable-optimizations LDFLAGS=-Wl,-rpath,'$$ORIGIN/../lib/')
+
+if(REZ_BUILD_MAJOR_VERSION EQUAL 2)
+	list(APPEND CONFIGURE_COMMAND --enable-unicode=ucs4)
+endif()
+
 message(STATUS "Configure Command: ${CONFIGURE_COMMAND}")
 
 if(NOT EXISTS $ENV{REZ_REPO_PAYLOAD_DIR}/${ARCHIVE_REL})
@@ -38,5 +43,6 @@ ExternalProject_Add(
 	INSTALL_COMMAND ${INSTALL_COMMAND}
 )
 
+add_custom_target(link_executable ALL COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/python3 ${CMAKE_INSTALL_PREFIX}/bin/python)
 
 install(CODE "message(STATUS \"Python-${PROJECT_VERSION} installed.\")")
